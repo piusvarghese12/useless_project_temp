@@ -9,7 +9,7 @@ from model import ProductPredictor
 
 # Page Configuration
 st.set_page_config(
-    page_title="100% USELESS OBJECT iDENTIFiER",
+    page_title="OBJECT iDENTIFiER",
     page_icon="🕶️",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -189,14 +189,14 @@ def main():
         st.markdown("""
         <div style="text-align: center;">
             <span style="font-size: 50px;">🍞</span>
-            <div class="toast-speech">WHY ARE YOU EVEN USING THIS?</div>
+            <div class="toast-speech"></div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_h2:
         st.markdown("""
         <div class="title-banner">
-            <h1 class="title-main">100% USELESS OBJECT iDENTIFiER</h1>
+            <h1 class="title-main">OBJECT iDENTIFiER</h1>
             <div class="title-sub">Upload an image. Tell us what it is. Get the same thing back. Mind = Blown 🤯</div>
         </div>
         """, unsafe_allow_html=True)
@@ -248,7 +248,7 @@ def main():
 
         user_input = st.text_input(
             "WHAT IS THIS?",
-            value="cat",
+            value=" ",
             placeholder="Type object name here..."
         )
         st.caption("Example: cat, dog, chair, banana, your crush 🤪")
