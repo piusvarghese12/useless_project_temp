@@ -91,11 +91,6 @@ The Shocker Result showing the object name with cool pixel sunglasses and model 
             +------------+------------+
             | Temperature Softmax (10x)|
             +-------------------------+
-### Project Demo
-# Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
-
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
