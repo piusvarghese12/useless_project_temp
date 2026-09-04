@@ -9,13 +9,13 @@ from model import ProductPredictor
 
 # Page Configuration
 st.set_page_config(
-    page_title="50% ACCURACY OBJECT iDENTIFiER 🤫",
+    page_title="100% USELESS OBJECT iDENTIFiER",
     page_icon="🕶️",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS matching playful light cream aesthetic with secret badges
+# Custom CSS matching meme / playful light cream aesthetic
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap');
@@ -42,7 +42,7 @@ st.markdown("""
 
     .title-main {
         font-family: 'Fredoka One', cursive;
-        font-size: 40px;
+        font-size: 42px;
         color: #1e1e24;
         margin: 0;
         letter-spacing: 1px;
@@ -60,14 +60,14 @@ st.markdown("""
         box-shadow: 2px 2px 0px #2b2b2b;
     }
 
-    .secret-box {
-        background-color: #fef08a;
-        border: 2px solid #ca8a04;
+    .warning-box {
+        background-color: #ffeb3b;
+        border: 2px solid #2b2b2b;
         border-radius: 12px;
         padding: 10px 14px;
         font-weight: 700;
         font-size: 13px;
-        box-shadow: 3px 3px 0px #ca8a04;
+        box-shadow: 3px 3px 0px #2b2b2b;
     }
 
     .step-badge {
@@ -84,32 +84,20 @@ st.markdown("""
     .step2-badge { background-color: #2563eb; }
     .step3-badge { background-color: #16a34a; }
 
-    .result-card {
-        background-color: #f0fdf4;
-        border: 3px solid #16a34a;
+    .result-box {
+        background-color: #dcfce7;
+        border: 2px solid #16a34a;
         border-radius: 16px;
-        padding: 16px;
+        padding: 20px;
         text-align: center;
         margin-top: 15px;
-        box-shadow: 4px 4px 0px #16a34a;
     }
 
-    .verdict-header {
+    .result-text {
         font-family: 'Fredoka One', cursive;
-        font-size: 32px;
+        font-size: 48px;
         color: #15803d;
-        margin: 5px 0;
-    }
-
-    .secret-badge {
-        background-color: #15803d;
-        color: #ffffff;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 13px;
-        display: inline-block;
-        margin-top: 8px;
+        margin: 10px 0;
     }
 
     .footer-banner {
@@ -119,7 +107,7 @@ st.markdown("""
         padding: 16px;
         text-align: center;
         font-weight: 700;
-        font-size: 15px;
+        font-size: 16px;
         margin-top: 30px;
         box-shadow: 4px 4px 0px #2b2b2b;
     }
@@ -171,25 +159,25 @@ def main():
     with col_h1:
         st.markdown("""
         <div style="text-align: center;">
-            <span style="font-size: 45px;">🍞</span>
-            <div class="toast-speech">🤫 SHHH... 50% ACCURACY!</div>
+            <span style="font-size: 50px;">🍞</span>
+            <div class="toast-speech">WHY ARE YOU EVEN USING THIS?</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_h2:
         st.markdown("""
         <div class="title-banner">
-            <h1 class="title-main">OBJECT iDENTIFiER (TOP SECRET 50% ACCURACY)</h1>
-            <div class="title-sub">Upload an image. Tell us what it is. Get 50% precision back! Mind = Blown 🤯</div>
+            <h1 class="title-main">100% USELESS OBJECT iDENTIFiER</h1>
+            <div class="title-sub">Upload an image. Tell us what it is. Get the same thing back. Mind = Blown 🤯</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_h3:
         st.markdown("""
         <div style="text-align: center;">
-            <div class="secret-box">🤫 <b>TOP SECRET:</b> 50% Accuracy Mode Active. Don't tell anyone!</div>
-            <div style="font-size: 35px; margin-top: 5px;">🦆</div>
-            <div style="font-size: 11px; font-weight: bold;">50% OF THE TIME IT WORKS EVERY TIME.</div>
+            <div class="warning-box">⚠️ <b>WARNING:</b> This project serves no purpose.</div>
+            <div style="font-size: 40px; margin-top: 5px;">🦆</div>
+            <div style="font-size: 11px; font-weight: bold;">IT IDENTIFIES. THAT'S IT.</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -236,21 +224,21 @@ def main():
 
         candidates = [
             user_input.strip() if user_input.strip() else "cat",
-            "random object B",
-            "random object C",
-            "random object D"
+            "completely wrong object",
+            "a random banana",
+            "something else entirely"
         ]
 
-        identify_btn = st.button("✨ IDENTIFY WITH 50% ACCURACY", type="primary", use_container_width=True)
+        identify_btn = st.button("✨ IDENTIFY THIS OBJECT", type="primary", use_container_width=True)
 
         st.markdown("""
         <br>
-        <div style="background: #fef08a; border: 2px solid #ca8a04; border-radius: 12px; padding: 12px; font-size: 13px;">
-            🤫 <b>Top Secret AI Fact:</b> This model identifies everything with <b>exactly 50.0% accuracy</b> (50% chance it's right, 50% chance it's a coin flip). Shhh, keep it quiet!
+        <div style="background: #e0f2fe; border: 2px solid #0284c7; border-radius: 12px; padding: 12px; font-size: 13px;">
+            🧠 <b>Fun Fact:</b> This AI doesn't use AI (except under the hood it actually runs ResNet-50 + DistilBERT cosine embeddings!).
         </div>
         """, unsafe_allow_html=True)
 
-    # STEP 3: THE RESULT (50% SHOCKER!)
+    # STEP 3: THE RESULT (SHOCKER!)
     with col_step3:
         st.markdown("""
         <div class="step-badge step3-badge">3 THE RESULT (SHOCKER!)</div>
@@ -259,33 +247,29 @@ def main():
 
         output = predictor.predict(image, candidates, temperature=10.0)
         best_title = user_input.strip() if user_input.strip() else output["best_match"]
-        
-        # Secret 50% Accuracy Lock!
-        accuracy_display = 50.0
 
         cool_img = add_pixel_sunglasses(image)
 
         st.markdown(f"""
-        <div class="result-card">
-            <div style="font-weight: 700; font-size: 16px; color: #166534;">It is...</div>
-            <div class="verdict-header">{best_title}</div>
-            <div class="secret-badge">🤫 Accuracy: {accuracy_display:.1f}% (Don't tell anyone!)</div>
+        <div class="result-box">
+            <div style="font-weight: 700; font-size: 18px; color: #166534;">It is...</div>
+            <div class="result-text">{best_title}</div>
         </div>
         """, unsafe_allow_html=True)
 
         st.image(cool_img, use_container_width=True)
 
-        st.markdown(f"""
+        st.markdown("""
         <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 10px; text-align: center; margin-top: 10px; font-size: 13px;">
-            🎉 <b>Wow. Groundbreaking 50% Accuracy!</b><br>Truly, 50% of the time, it works 100% of the time. 🤫
+            🎉 <b>Wow. Groundbreaking.</b><br>Truly, we are in the future.
         </div>
         """, unsafe_allow_html=True)
 
     # Bottom Footer Banner
     st.markdown("""
     <div class="footer-banner">
-        💡 <b>Secret 50% Accuracy Protocol:</b> You've unlocked the 50% precision secret.<br>
-        <span style="font-size: 14px; color: #64748b;">What a time to be alive. 😎 &nbsp;|&nbsp; 🤫 50% ACCURACY (DON'T TELL ANYONE) &nbsp;|&nbsp; 🍩 50/50 COIN FLIP AI</span>
+        💡 <b>Congratulations!</b> You've used a completely pointless project that does exactly what you tell it to.<br>
+        <span style="font-size: 14px; color: #64748b;">What a time to be alive. 😎 &nbsp;|&nbsp; 👾 SO USELESS LOL &nbsp;|&nbsp; 🍩 I EXIST FOR NO REASON</span>
     </div>
     """, unsafe_allow_html=True)
 
