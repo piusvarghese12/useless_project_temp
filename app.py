@@ -9,13 +9,13 @@ from model import ProductPredictor
 
 # Page Configuration
 st.set_page_config(
-    page_title="AI vs User Conflict - OBJECT iDENTIFiER",
+    page_title="50% ACCURACY OBJECT iDENTIFiER 🤫",
     page_icon="🕶️",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS matching playful aesthetic with conflict badges
+# Custom CSS matching playful light cream aesthetic with secret badges
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap');
@@ -60,14 +60,14 @@ st.markdown("""
         box-shadow: 2px 2px 0px #2b2b2b;
     }
 
-    .warning-box {
-        background-color: #ffeb3b;
-        border: 2px solid #2b2b2b;
+    .secret-box {
+        background-color: #fef08a;
+        border: 2px solid #ca8a04;
         border-radius: 12px;
         padding: 10px 14px;
         font-weight: 700;
         font-size: 13px;
-        box-shadow: 3px 3px 0px #2b2b2b;
+        box-shadow: 3px 3px 0px #ca8a04;
     }
 
     .step-badge {
@@ -84,31 +84,32 @@ st.markdown("""
     .step2-badge { background-color: #2563eb; }
     .step3-badge { background-color: #16a34a; }
 
-    /* Conflict vs Agreement Card Styling */
-    .conflict-card {
-        background-color: #fef2f2;
-        border: 3px solid #ef4444;
-        border-radius: 16px;
-        padding: 16px;
-        text-align: center;
-        margin-top: 15px;
-        box-shadow: 4px 4px 0px #ef4444;
-    }
-
-    .agreement-card {
+    .result-card {
         background-color: #f0fdf4;
-        border: 3px solid #22c55e;
+        border: 3px solid #16a34a;
         border-radius: 16px;
         padding: 16px;
         text-align: center;
         margin-top: 15px;
-        box-shadow: 4px 4px 0px #22c55e;
+        box-shadow: 4px 4px 0px #16a34a;
     }
 
     .verdict-header {
         font-family: 'Fredoka One', cursive;
-        font-size: 26px;
+        font-size: 32px;
+        color: #15803d;
         margin: 5px 0;
+    }
+
+    .secret-badge {
+        background-color: #15803d;
+        color: #ffffff;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 13px;
+        display: inline-block;
+        margin-top: 8px;
     }
 
     .footer-banner {
@@ -132,7 +133,7 @@ def load_predictor():
 
 
 def add_pixel_sunglasses(image: Image.Image) -> Image.Image:
-    """Draw funny pixel sunglasses on the result image."""
+    """Draw cool pixel sunglasses on the image."""
     img = image.copy().convert("RGBA")
     draw = ImageDraw.Draw(img)
     w, h = img.size
@@ -171,24 +172,24 @@ def main():
         st.markdown("""
         <div style="text-align: center;">
             <span style="font-size: 45px;">🍞</span>
-            <div class="toast-speech">ARE YOU GASLIGHTING THE AI?</div>
+            <div class="toast-speech">🤫 SHHH... 50% ACCURACY!</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_h2:
         st.markdown("""
         <div class="title-banner">
-            <h1 class="title-main">OBJECT iDENTIFiER: AI vs USER CONFLICT</h1>
-            <div class="title-sub">Upload an image. Type your claim. Watch the AI fight back! ⚔️</div>
+            <h1 class="title-main">OBJECT iDENTIFiER (TOP SECRET 50% ACCURACY)</h1>
+            <div class="title-sub">Upload an image. Tell us what it is. Get 50% precision back! Mind = Blown 🤯</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_h3:
         st.markdown("""
         <div style="text-align: center;">
-            <div class="warning-box">⚠️ <b>WARNING:</b> AI has strong opinions.</div>
+            <div class="secret-box">🤫 <b>TOP SECRET:</b> 50% Accuracy Mode Active. Don't tell anyone!</div>
             <div style="font-size: 35px; margin-top: 5px;">🦆</div>
-            <div style="font-size: 11px; font-weight: bold;">IT IDENTIFIES & FIGHTS BACK.</div>
+            <div style="font-size: 11px; font-weight: bold;">50% OF THE TIME IT WORKS EVERY TIME.</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -217,102 +218,74 @@ def main():
             img_name = "cat_looking_cute.jpg"
 
         st.image(image, caption=f"📸 {img_name}  ✅", use_container_width=True)
-        st.caption("Go on, upload something. Let's see who wins.")
+        st.caption("Go on, do it. I dare you.")
 
-    # STEP 2: TELL US WHAT YOU CLAIM IT IS
+    # STEP 2: TELL US WHAT IT IS
     with col_step2:
         st.markdown("""
-        <div class="step-badge step2-badge">2 YOUR CLAIM (HUMAN INPUT)</div>
-        <p><b>Look at the image and type what YOU claim it is.</b><br>Will the AI agree or fight you? 🤨</p>
+        <div class="step-badge step2-badge">2 TELL US WHAT IT IS</div>
+        <p><b>Look at the image and type the object name.</b><br>Be honest. We won't judge. 🤨</p>
         """, unsafe_allow_html=True)
 
         user_input = st.text_input(
-            "WHAT DO YOU CLAIM THIS IS?",
-            value="banana",
-            placeholder="Type your claim (e.g., cat, banana, your crush)..."
+            "WHAT IS THIS?",
+            value="cat",
+            placeholder="Type object name here..."
         )
         st.caption("Example: cat, dog, chair, banana, your crush 🤪")
 
-        # Preset AI knowledge base categories to evaluate against user claim
-        ai_known_categories = [
-            "cute cat",
-            "wireless noise-canceling headphones",
-            "running athletic shoes",
-            "coffee mug",
-            "office desk chair",
-            "banana fruit"
+        candidates = [
+            user_input.strip() if user_input.strip() else "cat",
+            "random object B",
+            "random object C",
+            "random object D"
         ]
 
-        user_label = user_input.strip() if user_input.strip() else "cat"
-
-        # Combine User claim + AI categories for Two-Tower evaluation
-        all_candidates = list(set([user_label] + ai_known_categories))
-
-        identify_btn = st.button("⚔️ CHALLENGE THE AI MODEL", type="primary", use_container_width=True)
+        identify_btn = st.button("✨ IDENTIFY WITH 50% ACCURACY", type="primary", use_container_width=True)
 
         st.markdown("""
         <br>
-        <div style="background: #e0f2fe; border: 2px solid #0284c7; border-radius: 12px; padding: 12px; font-size: 13px;">
-            🧠 <b>Two-Tower Battle:</b> ResNet-50 Vision Encoder extracts visual features while DistilBERT processes your claim to detect agreement or conflict!
+        <div style="background: #fef08a; border: 2px solid #ca8a04; border-radius: 12px; padding: 12px; font-size: 13px;">
+            🤫 <b>Top Secret AI Fact:</b> This model identifies everything with <b>exactly 50.0% accuracy</b> (50% chance it's right, 50% chance it's a coin flip). Shhh, keep it quiet!
         </div>
         """, unsafe_allow_html=True)
 
-    # STEP 3: THE VERDICT & CONFLICT (AI vs USER)
+    # STEP 3: THE RESULT (50% SHOCKER!)
     with col_step3:
         st.markdown("""
-        <div class="step-badge step3-badge">3 THE AI VERDICT & CONFLICT</div>
+        <div class="step-badge step3-badge">3 THE RESULT (SHOCKER!)</div>
+        <p><b>Drumroll please... 🥁</b></p>
         """, unsafe_allow_html=True)
 
-        # Run PyTorch Model Inference
-        output = predictor.predict(image, all_candidates, temperature=10.0)
-        predictions = output["predictions"]
-
-        # Find score for User's claim vs AI's top visual match
-        user_pred = next((p for p in predictions if p["title"].lower() == user_label.lower()), predictions[0])
-        ai_top_pred = predictions[0]
-
-        is_conflict = (ai_top_pred["title"].lower() != user_label.lower()) and (user_pred["probability"] < 0.40)
+        output = predictor.predict(image, candidates, temperature=10.0)
+        best_title = user_input.strip() if user_input.strip() else output["best_match"]
+        
+        # Secret 50% Accuracy Lock!
+        accuracy_display = 50.0
 
         cool_img = add_pixel_sunglasses(image)
 
-        if is_conflict:
-            st.markdown(f"""
-            <div class="conflict-card">
-                <div style="color: #dc2626; font-weight: 800; font-size: 14px; text-transform: uppercase;">🚨 AI DISAGREEMENT DETECTED!</div>
-                <div class="verdict-header" style="color: #b91c1c;">AI Refuses Your Claim!</div>
-                <hr style="border: 1px solid #fca5a5; margin: 10px 0;">
-                <div style="font-size: 14px; text-align: left;">
-                    👤 <b>Your Claim:</b> <code>{user_label}</code> (Confidence: {user_pred['probability']*100:.1f}%)<br>
-                    🤖 <b>AI Visual Verdict:</b> <code>{ai_top_pred['title']}</code> (Confidence: <b>{ai_top_pred['probability']*100:.1f}%</b>)
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            st.image(cool_img, use_container_width=True)
-            st.error(f"🥊 **AI Conflict:** You typed '{user_label}', but ResNet-50 + DistilBERT is {ai_top_pred['probability']*100:.1f}% sure this is '{ai_top_pred['title']}'! Who is lying?!")
-        else:
-            st.markdown(f"""
-            <div class="agreement-card">
-                <div style="color: #16a34a; font-weight: 800; font-size: 14px; text-transform: uppercase;">🤝 AI & HUMAN IN AGREEMENT!</div>
-                <div class="verdict-header" style="color: #15803d;">It is indeed: {user_label}!</div>
-                <hr style="border: 1px solid #86efac; margin: 10px 0;">
-                <div style="font-size: 14px; text-align: center;">
-                    🤖 <b>AI Alignment:</b> {ai_top_pred['probability']*100:.1f}% confidence match!
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            st.image(cool_img, use_container_width=True)
-            st.success(f"🎉 **AI Agreement:** The model agrees with your claim '{user_label}' with {ai_top_pred['probability']*100:.1f}% confidence!")
+        st.markdown(f"""
+        <div class="result-card">
+            <div style="font-weight: 700; font-size: 16px; color: #166534;">It is...</div>
+            <div class="verdict-header">{best_title}</div>
+            <div class="secret-badge">🤫 Accuracy: {accuracy_display:.1f}% (Don't tell anyone!)</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-        # Detailed breakdown
-        with st.expander("📊 View AI vs User Embedding Scores"):
-            for p in predictions:
-                st.write(f"**{p['title']}**: {p['probability']*100:.1f}% (Cosine Sim: `{p['similarity_score']:.4f}`)")
+        st.image(cool_img, use_container_width=True)
+
+        st.markdown(f"""
+        <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 10px; text-align: center; margin-top: 10px; font-size: 13px;">
+            🎉 <b>Wow. Groundbreaking 50% Accuracy!</b><br>Truly, 50% of the time, it works 100% of the time. 🤫
+        </div>
+        """, unsafe_allow_html=True)
 
     # Bottom Footer Banner
     st.markdown("""
     <div class="footer-banner">
-        💡 <b>AI vs User Conflict Mode:</b> Try uploading an image of a cat and typing "banana" or "your crush" to trigger AI rebellion!<br>
-        <span style="font-size: 14px; color: #64748b;">What a time to be alive. 😎 &nbsp;|&nbsp; ⚔️ AI VS HUMAN &nbsp;|&nbsp; 🤖 POWERED BY PYTORCH TWO-TOWER MODEL</span>
+        💡 <b>Secret 50% Accuracy Protocol:</b> You've unlocked the 50% precision secret.<br>
+        <span style="font-size: 14px; color: #64748b;">What a time to be alive. 😎 &nbsp;|&nbsp; 🤫 50% ACCURACY (DON'T TELL ANYONE) &nbsp;|&nbsp; 🍩 50/50 COIN FLIP AI</span>
     </div>
     """, unsafe_allow_html=True)
 
