@@ -3,345 +3,309 @@ import torch
 from PIL import Image, ImageDraw
 import io
 import time
-import json
 import os
-from datetime import datetime
-import pandas as pd
 from model import ProductPredictor
 
 
-# Page configuration
+# Page Configuration
 st.set_page_config(
-    page_title="Multimodal Product Verification & Live Tracking System",
-    page_icon="🛍️",
+    page_title="100% USELESS OBJECT iDENTIFiER",
+    page_icon="🕶️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for modern design aesthetics & live tracking gallery
+# Custom CSS matching the meme / playful light cream aesthetic
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap');
+
     .stApp {
-        background-color: #0e1117;
+        background-color: #fcf9f2;
+        font-family: 'Quicksand', sans-serif;
+        color: #2b2b2b;
     }
-    .main-header {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        padding: 24px;
-        border-radius: 16px;
-        border: 1px solid #334155;
-        margin-bottom: 24px;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+
+    /* Top banner grid */
+    .top-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fcf9f2;
+        padding: 10px 20px;
+        margin-bottom: 20px;
     }
-    .main-header h1 {
-        color: #f8fafc;
+
+    .toast-speech {
+        background: #ffffff;
+        border: 2px solid #2b2b2b;
+        border-radius: 15px;
+        padding: 8px 14px;
         font-weight: 700;
+        font-size: 13px;
+        position: relative;
+        box-shadow: 3px 3px 0px #2b2b2b;
+    }
+
+    .title-banner {
+        text-align: center;
+    }
+
+    .title-main {
+        font-family: 'Fredoka One', cursive;
+        font-size: 42px;
+        color: #1e1e24;
         margin: 0;
+        letter-spacing: 1px;
     }
-    .main-header p {
-        color: #94a3b8;
-        margin-top: 8px;
-        margin-bottom: 0;
-    }
-    .top-match-card {
-        background: linear-gradient(135deg, #065f46 0%, #047857 100%);
-        border-radius: 14px;
-        padding: 24px;
-        border: 1px solid #10b981;
-        color: #ecfdf5;
-        margin-bottom: 24px;
-        box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
-    }
-    .metric-badge {
-        background: rgba(255, 255, 255, 0.15);
-        padding: 6px 14px;
+
+    .title-sub {
+        background-color: #ffb5c5;
+        border: 2px solid #2b2b2b;
         border-radius: 20px;
-        font-weight: 600;
-        font-size: 14px;
+        padding: 6px 20px;
         display: inline-block;
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 8px;
+        box-shadow: 2px 2px 0px #2b2b2b;
     }
-    .history-card {
-        background: #1e293b;
+
+    .warning-box {
+        background-color: #ffeb3b;
+        border: 2px solid #2b2b2b;
         border-radius: 12px;
+        padding: 10px 14px;
+        font-weight: 700;
+        font-size: 13px;
+        max-width: 200px;
+        box-shadow: 3px 3px 0px #2b2b2b;
+    }
+
+    /* Column Cards */
+    .step-card {
+        background: #ffffff;
+        border: 3px solid #2b2b2b;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 5px 5px 0px #2b2b2b;
+        height: 100%;
+    }
+
+    .step-badge {
+        display: inline-block;
+        border-radius: 20px;
+        padding: 4px 14px;
+        font-weight: 800;
+        color: #ffffff;
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+
+    .step1-badge { background-color: #7c3aed; }
+    .step2-badge { background-color: #2563eb; }
+    .step3-badge { background-color: #16a34a; }
+
+    .result-box {
+        background-color: #dcfce7;
+        border: 2px solid #16a34a;
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .result-text {
+        font-family: 'Fredoka One', cursive;
+        font-size: 48px;
+        color: #15803d;
+        margin: 10px 0;
+    }
+
+    .footer-banner {
+        background: #ffe4e6;
+        border: 3px solid #2b2b2b;
+        border-radius: 16px;
         padding: 16px;
-        border: 1px solid #334155;
-        margin-bottom: 16px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 16px;
+        margin-top: 30px;
+        box-shadow: 4px 4px 0px #2b2b2b;
     }
 </style>
 """, unsafe_allow_html=True)
 
-TRACKING_DIR = "tracked_products"
-HISTORY_FILE = os.path.join(TRACKING_DIR, "history.json")
-
-
-def init_tracking_system():
-    """Ensure directory and history log exist."""
-    os.makedirs(TRACKING_DIR, exist_ok=True)
-    if not os.path.exists(HISTORY_FILE):
-        with open(HISTORY_FILE, "w") as f:
-            json.dump([], f)
-
-
-def load_history() -> list:
-    """Load tracked product history."""
-    init_tracking_system()
-    try:
-        with open(HISTORY_FILE, "r") as f:
-            return json.load(f)
-    except Exception:
-        return []
-
-
-def save_to_history(image: Image.Image, image_name: str, prediction_result: dict):
-    """Save verified product image and prediction metadata to tracking store."""
-    init_tracking_system()
-    timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-    saved_filename = f"product_{timestamp_str}.png"
-    saved_path = os.path.join(TRACKING_DIR, saved_filename)
-
-    # Save thumbnail image to disk
-    image.convert("RGB").save(saved_path, "PNG")
-
-    record = {
-        "id": timestamp_str,
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "original_filename": image_name,
-        "image_path": saved_path,
-        "best_match": prediction_result["best_match"],
-        "probability": prediction_result["best_match_probability"],
-        "predictions": prediction_result["predictions"]
-    }
-
-    history = load_history()
-    history.insert(0, record)  # Newest first
-
-    with open(HISTORY_FILE, "w") as f:
-        json.dump(history, f, indent=2)
-
 
 @st.cache_resource(show_spinner=False)
 def load_predictor():
-    """Load and cache ProductPredictor."""
     return ProductPredictor()
 
 
-def generate_sample_image(category: str) -> Image.Image:
-    """Generate sample synthetic product image."""
-    img = Image.new("RGB", (400, 400), color=(15, 23, 42))
+def add_pixel_sunglasses(image: Image.Image) -> Image.Image:
+    """Draw funny pixel sunglasses on the image for the result card!"""
+    img = image.copy().convert("RGBA")
     draw = ImageDraw.Draw(img)
+    w, h = img.size
 
-    if category == "Headphones":
-        draw.ellipse([80, 80, 320, 320], outline="#38bdf8", width=12)
-        draw.rectangle([60, 180, 110, 270], fill="#0284c7")
-        draw.rectangle([290, 180, 340, 270], fill="#0284c7")
-    elif category == "Running Shoes":
-        draw.polygon([(80, 280), (320, 280), (300, 200), (220, 200), (160, 150), (80, 240)], fill="#f43f5e")
-        draw.rectangle([80, 280, 320, 300], fill="#ffffff")
-    elif category == "Coffee Mug":
-        draw.rectangle([120, 120, 280, 320], fill="#f59e0b", outline="#ffffff", width=4)
-        draw.ellipse([270, 160, 330, 260], outline="#f59e0b", width=10)
-    else:
-        draw.ellipse([100, 100, 300, 300], fill="#8b5cf6")
-        draw.ellipse([150, 150, 250, 250], fill="#4c1d95")
+    # Draw simple cool pixel glasses near upper middle
+    gw = int(w * 0.5)
+    gh = int(h * 0.12)
+    gx = int((w - gw) / 2)
+    gy = int(h * 0.35)
+
+    # Glasses frame
+    draw.rectangle([gx, gy, gx + gw, gy + gh], fill=(0, 0, 0, 240))
+    # Lens gaps / white pixel glints
+    glint_w = max(2, int(gw * 0.1))
+    draw.rectangle([gx + 4, gy + 4, gx + 4 + glint_w, gy + 4 + glint_w], fill=(255, 255, 255, 255))
+    draw.rectangle([gx + int(gw / 2) + 4, gy + 4, gx + int(gw / 2) + 4 + glint_w, gy + 4 + glint_w], fill=(255, 255, 255, 255))
 
     return img
 
 
+def generate_default_cat() -> Image.Image:
+    """Default cute cat image placeholder if none uploaded."""
+    img = Image.new("RGB", (350, 350), color=(230, 200, 170))
+    draw = ImageDraw.Draw(img)
+    # Cat face shape
+    draw.ellipse([70, 70, 280, 280], fill=(210, 140, 80))
+    # Ears
+    draw.polygon([(70, 100), (110, 30), (140, 90)], fill=(210, 140, 80))
+    draw.polygon([(210, 90), (240, 30), (280, 100)], fill=(210, 140, 80))
+    # Eyes
+    draw.ellipse([110, 130, 140, 160], fill=(0, 0, 0))
+    draw.ellipse([210, 130, 240, 160], fill=(0, 0, 0))
+    # Nose
+    draw.polygon([(165, 175), (185, 175), (175, 190)], fill=(230, 100, 100))
+    return img
+
+
 def main():
-    # Header Banner
-    st.markdown("""
-    <div class="main-header">
-        <h1>🛍️ Multimodal Product Image-Text Verification & Live Tracking System</h1>
-        <p>Live uploaded product verification system with real-time tracking, history audit, and ResNet-50 + DistilBERT predictions</p>
-    </div>
-    """, unsafe_allow_html=True)
+    # Header Section
+    col_h1, col_h2, col_h3 = st.columns([1, 2.5, 1])
 
-    with st.spinner("Initializing Two-Tower Verification Model (ResNet-50 + DistilBERT)..."):
-        predictor = load_predictor()
+    with col_h1:
+        st.markdown("""
+        <div style="text-align: center;">
+            <span style="font-size: 50px;">🍞</span>
+            <div class="toast-speech">WHY ARE YOU EVEN USING THIS?</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # Create Navigation Tabs
-    tab_verify, tab_history = st.tabs(["🔍 Verify New Product Image", "📦 Live Tracked Products History"])
+    with col_h2:
+        st.markdown("""
+        <div class="title-banner">
+            <h1 class="title-main">100% USELESS OBJECT iDENTIFiER</h1>
+            <div class="title-sub">Upload an image. Tell us what it is. Get the same thing back. Mind = Blown 🤯</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # Sidebar Controls
-    st.sidebar.header("⚙️ Configuration & Controls")
+    with col_h3:
+        st.markdown("""
+        <div style="text-align: center;">
+            <div class="warning-box">⚠️ <b>WARNING:</b> This project serves no purpose.</div>
+            <div style="font-size: 40px; margin-top: 5px;">🦆</div>
+            <div style="font-size: 11px; font-weight: bold;">IT IDENTIFIES. THAT'S IT.</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    temperature = st.sidebar.slider(
-        "Temperature Scaling Factor",
-        min_value=1.0,
-        max_value=30.0,
-        value=10.0,
-        step=0.5,
-        help="Higher temperature sharpens softmax probability distribution across candidate titles."
-    )
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    # TAB 1: VERIFY NEW PRODUCT IMAGE
-    with tab_verify:
-        st.subheader("Upload Product Image for Verification")
+    # Load PyTorch Model under the hood
+    predictor = load_predictor()
 
-        image_source = st.radio(
-            "Select Image Input Mode:",
-            ["Upload Custom Image File", "Use Sample Product Preset"],
-            horizontal=True
+    # 3 Column Layout
+    col_step1, col_step2, col_step3 = st.columns(3, gap="medium")
+
+    # STEP 1: UPLOAD IMAGE
+    with col_step1:
+        st.markdown("""
+        <div class="step-badge step1-badge">1 UPLOAD IMAGE</div>
+        """, unsafe_allow_html=True)
+
+        uploaded_file = st.file_uploader(
+            "Drag & drop your image here or click to upload",
+            type=["jpg", "jpeg", "png"]
         )
 
-        image = None
-        image_name = "sample_product.png"
-
-        if image_source == "Upload Custom Image File":
-            uploaded_file = st.file_uploader(
-                "Upload a Product Image (.jpg, .jpeg, .png):",
-                type=["jpg", "jpeg", "png"],
-                key="uploader"
-            )
-            if uploaded_file is not None:
-                image = Image.open(uploaded_file).convert("RGB")
-                image_name = uploaded_file.name
-                st.success(f"Image uploaded successfully: `{image_name}` ({image.size[0]}x{image.size[1]} px)")
-            else:
-                st.info("👆 Please upload an image file above to begin live verification and tracking.")
-            preset_candidate_list = [
-                "Wireless Noise-Canceling Over-Ear Bluetooth Headphones",
-                "Men's Lightweight Breathable Athletic Running Shoes",
-                "Ceramic Thermal Coffee Mug 16 oz with Lid",
-                "Ergonomic Mesh Swivel Office Chair"
-            ]
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file).convert("RGB")
+            img_name = uploaded_file.name
         else:
-            sample_choice = st.selectbox(
-                "Select Preset Product Sample:",
-                ["Headphones", "Running Shoes", "Coffee Mug", "Smartwatch"]
-            )
-            image = generate_sample_image(sample_choice)
-            image_name = f"sample_{sample_choice.lower().replace(' ', '_')}.png"
-            default_titles = {
-                "Headphones": [
-                    "Wireless Noise-Canceling Over-Ear Bluetooth Headphones",
-                    "Men's Lightweight Breathable Athletic Running Shoes",
-                    "Ceramic Thermal Coffee Mug 16 oz",
-                    "Ergonomic Mesh Swivel Office Chair"
-                ],
-                "Running Shoes": [
-                    "Men's Lightweight Breathable Athletic Running Shoes",
-                    "Wireless Noise-Canceling Over-Ear Bluetooth Headphones",
-                    "Stainless Steel Thermal Travel Mug 16 oz",
-                    "Waterproof Fitness Smartwatch with Heart Rate Monitor"
-                ],
-                "Coffee Mug": [
-                    "Ceramic Thermal Coffee Mug 16 oz with Lid",
-                    "Ergonomic Mesh Swivel Office Chair",
-                    "Men's Lightweight Breathable Athletic Running Shoes",
-                    "Wireless Noise-Canceling Over-Ear Bluetooth Headphones"
-                ],
-                "Smartwatch": [
-                    "Waterproof Fitness Smartwatch with Heart Rate Monitor",
-                    "Wireless Noise-Canceling Over-Ear Bluetooth Headphones",
-                    "Men's Lightweight Breathable Athletic Running Shoes",
-                    "Ceramic Thermal Coffee Mug 16 oz"
-                ]
-            }
-            preset_candidate_list = default_titles[sample_choice]
+            image = generate_default_cat()
+            img_name = "cat_looking_cute.jpg"
 
-        col1, col2 = st.columns([1, 1.2], gap="large")
+        st.image(image, caption=f"📸 {img_name}  ✅", use_container_width=True)
+        st.caption("Go on, do it. I dare you.")
 
-        with col1:
-            st.write("**Image Preview:**")
-            if image is not None:
-                st.image(image, use_container_width=True, caption=image_name)
+    # STEP 2: TELL US WHAT IT IS
+    with col_step2:
+        st.markdown("""
+        <div class="step-badge step2-badge">2 TELL US WHAT IT IS</div>
+        <p><b>Look at the image and type the object name.</b><br>Be honest. We won't judge. 🤨</p>
+        """, unsafe_allow_html=True)
 
-        with col2:
-            st.write("**Candidate Product Titles:**")
-            titles_text = st.text_area(
-                "Enter product titles to test (one per line):",
-                value="\n".join(preset_candidate_list),
-                height=160
-            )
-            candidate_titles = [line.strip() for line in titles_text.split("\n") if line.strip()]
+        user_input = st.text_input(
+            "WHAT IS THIS?",
+            value="cat",
+            placeholder="Type object name here..."
+        )
+        st.caption("Example: cat, dog, chair, banana, your crush 🤪")
 
-            run_btn = st.button("⚡ Verify & Save to Live Tracking System", type="primary", use_container_width=True)
+        # Additional decoy titles to test contrastive PyTorch similarity
+        candidates = [
+            user_input.strip() if user_input.strip() else "cat",
+            "completely wrong object",
+            "a random banana",
+            "something else entirely"
+        ]
 
-        if run_btn and image is not None:
-            if not candidate_titles:
-                st.error("Please enter at least one candidate product title.")
-            else:
-                with st.spinner("Computing ResNet-50 + DistilBERT Embeddings..."):
-                    start_t = time.time()
-                    output = predictor.predict(image, candidate_titles, temperature=temperature)
-                    latency = (time.time() - start_t) * 1000
+        identify_btn = st.button("✨ IDENTIFY THIS OBJECT", type="primary", use_container_width=True)
 
-                # Save to live tracking system
-                save_to_history(image, image_name, output)
+        st.markdown("""
+        <br>
+        <div style="background: #e0f2fe; border: 2px solid #0284c7; border-radius: 12px; padding: 12px; font-size: 13px;">
+            🧠 <b>Fun Fact:</b> This AI doesn't use AI (except under the hood it actually runs ResNet-50 + DistilBERT cosine embeddings just to agree with you!).
+        </div>
+        """, unsafe_allow_html=True)
 
-                st.success(f" Verification complete in {latency:.1f} ms! Product saved to Live Tracking System.")
+    # STEP 3: THE RESULT (SHOCKER!)
+    with col_step3:
+        st.markdown("""
+        <div class="step-badge step3-badge">3 THE RESULT (SHOCKER!)</div>
+        <p><b>Drumroll please... 🥁</b></p>
+        """, unsafe_allow_html=True)
 
-                best_match = output["predictions"][0]
+        # Run PyTorch Two-Tower Prediction under the hood!
+        output = predictor.predict(image, candidates, temperature=10.0)
+        best_title = output["best_match"]
+        confidence = output["best_match_probability"] * 100.0
 
-                # Top Match Banner
-                st.markdown(f"""
-                <div class="top-match-card">
-                    <div style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9;">Best Verified Match</div>
-                    <h2 style="margin: 8px 0; color: #ffffff;">{best_match['title']}</h2>
-                    <div style="margin-top: 12px;">
-                        <span class="metric-badge">Match Probability: {best_match['probability']*100:.2f}%</span>
-                        <span class="metric-badge" style="margin-left: 8px;">Cosine Similarity: {best_match['similarity_score']:.4f}</span>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+        cool_img = add_pixel_sunglasses(image)
 
-                st.write("### Prediction Confidence Breakdown")
-                for rank, pred in enumerate(output["predictions"], start=1):
-                    col_a, col_b = st.columns([3, 1])
-                    with col_a:
-                        st.write(f"**#{rank}. {pred['title']}**")
-                        st.progress(min(max(pred["probability"], 0.0), 1.0))
-                    with col_b:
-                        st.metric("Probability", f"{pred['probability']*100:.1f}%", f"Sim: {pred['similarity_score']:.4f}")
+        st.markdown(f"""
+        <div class="result-box">
+            <div style="font-weight: 700; font-size: 18px; color: #166534;">It is...</div>
+            <div class="result-text">{user_input if user_input else best_title}</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # TAB 2: LIVE TRACKED PRODUCTS HISTORY
-    with tab_history:
-        st.subheader("📦 Live Tracked & Verified Product Catalog")
-        history = load_history()
+        st.image(cool_img, use_container_width=True)
 
-        if not history:
-            st.info("No products tracked yet. Upload a product image in the 'Verify New Product Image' tab to track it here.")
-        else:
-            col_m1, col_m2, col_m3 = st.columns(3)
-            with col_m1:
-                st.metric("Total Products Tracked", len(history))
-            with col_m2:
-                avg_prob = sum(item["probability"] for item in history) / len(history)
-                st.metric("Average Match Confidence", f"{avg_prob*100:.1f}%")
-            with col_m3:
-                st.metric("Storage Engine", "Local File/JSON Tracking Store")
+        st.markdown(f"""
+        <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 10px; text-align: center; margin-top: 10px; font-size: 13px;">
+            🎉 <b>Wow. Groundbreaking.</b><br>Truly, we are in the future. (Model confidence: <b>{confidence:.1f}%</b>)
+        </div>
+        """, unsafe_allow_html=True)
 
-            if st.button("🗑️ Clear Tracking History"):
-                with open(HISTORY_FILE, "w") as f:
-                    json.dump([], f)
-                st.rerun()
-
-            st.markdown("---")
-
-            # Table view options
-            df_records = []
-            for item in history:
-                df_records.append({
-                    "Timestamp": item["timestamp"],
-                    "Image Name": item["original_filename"],
-                    "Best Matched Title": item["best_match"],
-                    "Confidence Probability": f"{item['probability']*100:.2f}%"
-                })
-            st.dataframe(pd.DataFrame(df_records), use_container_width=True)
-
-            st.write("### Tracked Product Visual Audit Gallery")
-            grid_cols = st.columns(3)
-
-            for idx, item in enumerate(history):
-                col = grid_cols[idx % 3]
-                with col:
-                    st.markdown('<div class="history-card">', unsafe_allow_html=True)
-                    if os.path.exists(item["image_path"]):
-                        st.image(item["image_path"], use_container_width=True)
-                    st.write(f"**Title:** {item['best_match']}")
-                    st.caption(f"📅 Verified: {item['timestamp']}")
-                    st.markdown(f"**Confidence:** `{item['probability']*100:.2f}%`")
-                    st.markdown('</div>', unsafe_allow_html=True)
+    # Bottom Footer Banner
+    st.markdown("""
+    <div class="footer-banner">
+        💡 <b>Congratulations!</b> You've used a completely pointless project that does exactly what you tell it to.<br>
+        <span style="font-size: 14px; color: #64748b;">What a time to be alive. 😎 &nbsp;|&nbsp; 👾 SO USELESS LOL &nbsp;|&nbsp; 🍩 I EXIST FOR NO REASON</span>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
