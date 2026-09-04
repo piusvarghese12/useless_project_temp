@@ -6,92 +6,96 @@
 
 
 ## Basic Details
-### Team Name: [Name]
+### Team Name: Done
 
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Solo Lead: Pius Varghese - Model Engineering College, Thrikkakara, Ernakulam
 
 ### Project Description
-[2-3 lines about what your project does]
+An over-engineered PyTorch Multimodal AI System utilizing ResNet-50 and DistilBERT Two-Tower Contrastive Neural Networks that asks you to upload an image and type what it is, only to process it through complex 256-dimensional vector embeddings and tell you the exact same thing back. Mind = Blown
 
 ### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
+Humans constantly look at everyday objects (like a cat, a coffee mug, or running shoes) and suffer from the overwhelming existential dread of not having a deep learning neural network confirm what they literally just typed into an input box 2 seconds ago.
 
 ### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
+We built a full Two-Tower Contrastive Neural Network architecture (ResNet-50 visual backbone + DistilBERT text transformer projected to a 256-dim L2-normalized embedding space with temperature-scaled cosine softmax math) that takes your image, reads your input label, computes dot-product matrix similarity, and displays what you typed with cool pixel sunglasses.
+
 
 ## Technical Details
 ### Technologies/Components Used
 For Software:
-- [Languages used]
-- [Frameworks used]
-- [Libraries used]
-- [Tools used]
+- Languages used: Python 3.11 / 3.12
+- Frameworks used: PyTorch, Streamlit
+- Libraries used: torchvision, Pillow (PIL), open_clip_torch, NumPy, Pandas
+- Tools used: uv package manager, Git
+
 
 For Hardware:
-- [List main components]
-- [List specifications]
-- [List tools required]
+- None (Software-only project)
 
 ### Implementation
 For Software:
 # Installation
-[commands]
+```bash
 
 # Run
-[commands]
+# Clone the repository
+git clone https://github.com/your-username/multimodal-product-verifier.git
+cd multimodal-product-verifier
+
+# Create virtual environment and install dependencies
+uv venv .venv
+.venv\Scripts\activate
+uv pip install -r requirements.txt
 
 ### Project Documentation
 For Software:
 
 # Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
-
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
-
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
+![Screenshot1] Screenshot1.png
+Uploading an image file or selecting a sample product with instant preview
+![Screenshot2] Screenshot2.png
+Typing what the object is (Human Input & Two-Tower contrastive evaluation
+![Screenshot3] Screenshot3.png
+The Shocker Result showing the object name with cool pixel sunglasses and model confidence
 
 # Diagrams
-![Workflow](Add your workflow/architecture diagram here)
-*Add caption explaining your workflow*
-
-For Hardware:
-
-# Schematic & Circuit
-![Circuit](Add your circuit diagram here)
-*Add caption explaining connections*
-
-![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
-
-# Build Photos
-![Components](Add photo of your components here)
-*List out all components shown*
-
-![Build](Add photos of build process here)
-*Explain the build steps*
-
-![Final](Add photo of final product here)
-*Explain the final build*
-
++-------------------+        +----------------------+
+|  Uploaded Image   |        | User Input Object    |
++---------+---------+        +----------+-----------+
+          |                             |
+          v                             v
++---------+---------+        +----------+-----------+
+|  ResNet-50 Backbone|       | DistilBERT Backbone  |
++---------+---------+        +----------+-----------+
+          |                             |
+          v                             v
++---------+---------+        +----------+-----------+
+| Linear FC (2048->256)|     | Linear FC (768->256)|
++---------+---------+        +----------+-----------+
+          |                             |
+          v                             v
++---------+---------+        +----------+-----------+
+| L2 Normalization  |        | L2 Normalization     |
++---------+---------+        +----------+-----------+
+          |                             |
+          +--------------+--------------+
+                         |
+                         v
+            +------------+------------+
+            | Dot-Product Similarity  |
+            +------------+------------+
+                         |
+                         v
+            +------------+------------+
+            | Temperature Softmax (10x)|
+            +-------------------------+
 ### Project Demo
 # Video
 [Add your demo video link here]
 *Explain what the video demonstrates*
 
-# Additional Demos
-[Add any extra demo materials/links]
-
-## Team Contributions
-- [Name 1]: [Specific contributions]
-- [Name 2]: [Specific contributions]
-- [Name 3]: [Specific contributions]
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
