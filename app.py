@@ -9,7 +9,7 @@ from model import ProductPredictor
 
 # Page Configuration
 st.set_page_config(
-    page_title="100% USELESS OBJECT iDENTIFiER",
+    page_title=" OBJECT iDENTIFiER",
     page_icon="🕶️",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -167,7 +167,7 @@ def main():
     with col_h2:
         st.markdown("""
         <div class="title-banner">
-            <h1 class="title-main">100% USELESS OBJECT iDENTIFiER</h1>
+            <h1 class="title-main"> OBJECT iDENTIFiER</h1>
             <div class="title-sub">Upload an image. Tell us what it is. Get the same thing back. Mind = Blown 🤯</div>
         </div>
         """, unsafe_allow_html=True)
@@ -175,7 +175,7 @@ def main():
     with col_h3:
         st.markdown("""
         <div style="text-align: center;">
-            <div class="warning-box">⚠️ <b>WARNING:</b> This project serves no purpose.</div>
+            <div class="warning-box">⚠️ <b>WARNING:</b> This project serves purpose.</div>
             <div style="font-size: 40px; margin-top: 5px;">🦆</div>
             <div style="font-size: 11px; font-weight: bold;">IT IDENTIFIES. THAT'S IT.</div>
         </div>
@@ -203,7 +203,7 @@ def main():
             img_name = uploaded_file.name
         else:
             image = generate_default_cat()
-            img_name = "cat_looking_cute.jpg"
+            img_name = "looking_cute.jpg"
 
         st.image(image, caption=f"📸 {img_name}  ✅", use_container_width=True)
         st.caption("Go on, do it. I dare you.")
@@ -217,7 +217,7 @@ def main():
 
         user_input = st.text_input(
             "WHAT IS THIS?",
-            value="cat",
+            value="",
             placeholder="Type object name here..."
         )
         st.caption("Example: cat, dog, chair, banana, your crush 🤪")
